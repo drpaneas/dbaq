@@ -5,3 +5,4 @@ openQA log &amp; test parser written for debugging
 - python3-certifi
 - python3-beautifulsoup4
 - python3-requests
+- python3-pyparsing
