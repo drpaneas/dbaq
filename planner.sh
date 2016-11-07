@@ -25,7 +25,6 @@ for source_code in `cat /$dir/$name/sources`; do counter=$(printf "%0*d\n" ${#NU
 i=1
 for result in `cat /$dir/$name/results`; do counter=$(printf "%0*d\n" ${#NUMOFLINES} $i); echo $result > $dir/$name/$counter/result; ((i = i + 1)); done
 
+wget --quiet $url/file/autoinst-log.txt -O $dir/$name/log
+
 echo working dir is $work_dir
-echo
-
-
