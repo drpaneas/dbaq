@@ -75,9 +75,15 @@ if [ $FAIL -ne 0 ]; then
         # TODO
         # Provide debugging files
         dir_of_failed=$(grep -rwn $dir/$name/ -e "$eachtest_failed" | awk 'BEGIN { FS="./names:"; } { print $2; }' | cut -d ':' -f1)
-        echo -e "- ${red} $eachtest_failed ${NC} sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
-        echo "Error message: $dir/$name/$dir_of_failed/error"
+        if [ -f "$dir/$name/$dir_of_failed/error" ]; then
+            echo -e "- ${red} $eachtest_failed ${NC} => $(cat $dir/$name/$dir_of_failed/error)"
+            echo -e "   sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
+        else
+            echo -e "- ${red} $eachtest_failed ${NC} => No openQA failure message was found in the logs"
+            echo -e "   sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
+        fi
     done
+
 fi
 
 
@@ -87,6 +93,6 @@ fi
 echo
 echo "${bold} Summary of test results${normal}"
 echo "=========================${normal}"
-echo -e "+ PASSED : $PASS (${blue}$dir/$name/passed.sum${NC})"
-echo -e "- FAILED : $FAIL (${blue}$dir/$name/failed.sum${NC})"
+echo -e "+ PASSED : $PASS (${green}$dir/$name/passed.sum${NC})"
+echo -e "- FAILED : $FAIL (${red}$dir/$name/failed.sum${NC})"
 echo

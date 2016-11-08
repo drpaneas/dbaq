@@ -77,7 +77,7 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
     egrep -iB 1 Debug $debug | grep -v -- '--' | egrep -iv Debug > $debug_outputs
 
     if egrep -i ' failed ' $debug &> /dev/null ; then
-        egrep -iB 1 ' failed ' $debug | awk '{print $1;}' | head -n 1 > $error
+        egrep -i ' failed ' $debug | head -n 1 > $error
     fi
 
     NUMOFDEBUGLINES=$(wc -l < "$debug_lines")
