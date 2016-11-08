@@ -48,7 +48,7 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
               line_start=$starting
         fi
 
-        if [[ $line == *"finished $testname "* ]] || [[ $line == *"$testname died"* ]]
+        if [[ $line == *"finished $testname "* ]] || [[ $line == *"$testname died"* ]] || [[ $line == *"$testname failed"* ]]
         then
               line_finish=$finished
         fi
@@ -60,28 +60,26 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
     # TODO: Take into account that some tests are failing secretely
     #       and there is no any 'finished' or 'die' message
 
+#    counter=1
+#    while IFS='' read -r keimeno || [[ -n "$keimeno" ]]; do
+#      if [[ $counter -gt $line_start ]]
+#      then
+#          if [[ $keimeno == *"starting"* ]]
+#          then
+#              break
+#          fi
+#          echo "$keimeno" >> "$log"
+#      fi
+#      counter=$[$counter +1]
+#    done < "$file"
+
     counter=1
-    if [ -z "$line_finish" ]
-    then
-        while IFS='' read -r grammi || [[ -n "$grammi" ]]; do
-          if [[ $counter -gt $line_start ]]
-          then
-              if [[ $grammi == *"starting"* ]]
-              then
-                  break
-              fi
-              echo "$grammi" >> "$log"
-          fi
-          counter=$[$counter +1]
-        done < "$file"
-    else
-        while IFS='' read -r grammi || [[ -n "$grammi" ]]; do
-          if [[ $counter -gt $line_start ]] && [[ $counter -lt $line_finish ]]
-          then
-              echo "$grammi" >> "$log"
-          fi
-          counter=$[$counter +1]
-        done < "$file"
-    fi
+    while IFS='' read -r grammi || [[ -n "$grammi" ]]; do
+      if [[ $counter -gt $line_start ]] && [[ $counter -lt $line_finish ]]
+      then
+          echo "$grammi" >> "$log"
+      fi
+      counter=$[$counter +1]
+    done < "$file"
 
 done

@@ -19,6 +19,7 @@ work_dir=$dir/$name
 
 bash planner.sh $url
 bash logger.sh $url
+bash debugger.sh $url
 
 if [ ! -d "$dir/$name" ]; then
     echo "planner.sh failed"
@@ -74,7 +75,8 @@ if [ $FAIL -ne 0 ]; then
         # TODO
         # Provide debugging files
         dir_of_failed=$(grep -rwn $dir/$name/ -e "$eachtest_failed" | awk 'BEGIN { FS="./names:"; } { print $2; }' | cut -d ':' -f1)
-        echo -e "- ${red} $eachtest_failed ${NC} failed (${blue}$dir/$name/$dir_of_failed/source_code.pl${NC})  logs: ${red} $dir/$name/$dir_of_failed/log ${NC} "
+        echo -e "- ${red} $eachtest_failed ${NC} sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
+        echo "Error message: $dir/$name/$dir_of_failed/error"
     done
 fi
 
