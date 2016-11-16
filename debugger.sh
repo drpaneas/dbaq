@@ -84,6 +84,15 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
 
 
 
+    nol_debug_lines=$(cat $debug_lines | wc -l)
+    nol_debug_outputs=$(cat $debug_outputs | wc -l)
+
+    if [ "$nol_debug_lines" != "$nol_debug_outputs" ]; then
+        #lastline=$(grep '>>>' $debug | tail -n 1)
+        lastline=$(cat $debug | tail -n 1)
+        echo "$lastline" >> $debug_outputs
+    fi
+
     if egrep -i ' failed ' $debug &> /dev/null ; then
         egrep -i ' failed ' $debug | head -n 1 > $error
     fi
