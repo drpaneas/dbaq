@@ -8,7 +8,7 @@ name=$(echo $url | cut -d '/' -f 5-)
 dir="/tmp/dbaq"
 work_dir=$dir/$name
 
-if [ ! -d "$dir/$name" ]; then
+if [ ! -d "$work_dir" ]; then
     echo "planner.sh failed"
     exit 1
 fi
@@ -17,15 +17,15 @@ echo "Producing report ..."
 
 
 # Variables (Counters)
-NUMOFLINES=$(wc -l < "$dir/$name/names")
+NUMOFLINES=$(wc -l < "$work_dir/names")
 
 
 # Create log per testsuite
 for (( i=1; i<=$NUMOFLINES; i++ )); do
     counter=$(printf "%0*d\n" ${#NUMOFLINES} $i)
-    testname=$(cat $dir/$name/$counter/test)
-    log="$dir/$name/$counter/log"
-    debug="$dir/$name/$counter/debug"
+    testname=$(cat $work_dir/$counter/test)
+    log="$work_dir/$counter/log"
+    debug="$work_dir/$counter/debug"
 
     if [ -f "$debug" ]
     then
@@ -38,16 +38,16 @@ done
 
 for (( i=1; i<=$NUMOFLINES; i++ )); do
     counter=$(printf "%0*d\n" ${#NUMOFLINES} $i)
-    testname=$(cat $dir/$name/$counter/test)
-    log="$dir/$name/$counter/log"
-    debug="$dir/$name/$counter/debug"
-    debug_lines="$dir/$name/$counter/debug_lines"
-    debug_commands="$dir/$name/$counter/debug_commands"
-    debug_sourcelines="$dir/$name/$counter/debug_sourcelines"
-    debug_outputs="$dir/$name/$counter/debug_outputs"
-    debug_reports="$dir/$name/$counter/debug_reports"
-    error="$dir/$name/$counter/error"
-    source_code="$dir/$name/$counter/source_code.pl"
+    testname=$(cat $work_dir/$counter/test)
+    log="$work_dir/$counter/log"
+    debug="$work_dir/$counter/debug"
+    debug_lines="$work_dir/$counter/debug_lines"
+    debug_commands="$work_dir/$counter/debug_commands"
+    debug_sourcelines="$work_dir/$counter/debug_sourcelines"
+    debug_outputs="$work_dir/$counter/debug_outputs"
+    debug_reports="$work_dir/$counter/debug_reports"
+    error="$work_dir/$counter/error"
+    source_code="$work_dir/$counter/source_code.pl"
 
 
     if [ -f "$debug_lines" ]

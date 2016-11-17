@@ -7,17 +7,17 @@ url=$1
 name=$(echo $url | cut -d '/' -f 5-)
 dir="/tmp/dbaq"
 work_dir=$dir/$name
+file="$work_dir/log"
 
-if [ ! -d "$dir/$name" ]; then
+if [ ! -d "$work_dir" ]; then
     echo "planner.sh failed"
     exit 1
 fi
 
 echo
 
-wget --quiet $url/file/autoinst-log.txt -O $dir/$name/log
+wget --quiet $url/file/autoinst-log.txt -O $file
 
-file="$dir/$name/log"
 if [ -f "$file" ]
 then
   echo "Complete logs can be found at: $file"
@@ -27,13 +27,13 @@ else
 fi
 
 # Variables (Counters)
-NUMOFLINES=$(wc -l < "$dir/$name/names")
+NUMOFLINES=$(wc -l < "$work_dir/names")
 
 
 for (( i=1; i<=$NUMOFLINES; i++ )); do
     counter=$(printf "%0*d\n" ${#NUMOFLINES} $i)
-    testname=$(cat $dir/$name/$counter/test)
-    log="$dir/$name/$counter/log"
+    testname=$(cat $work_dir/$counter/test)
+    log="$work_dir/$counter/log"
 
     if [ -f "$log" ]
     then
