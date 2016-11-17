@@ -21,7 +21,7 @@ bash planner.sh $url
 bash logger.sh $url
 bash debugger.sh $url
 
-if [ ! -d "$dir/$name" ]; then
+if [ ! -d "$work_dir" ]; then
     echo "planner.sh failed"
     exit 1
 fi
@@ -29,19 +29,19 @@ fi
 echo
 
 # Variables (Counters)
-NUMOFLINES=$(wc -l < "$dir/$name/names")
+NUMOFLINES=$(wc -l < "$work_dir/names")
 PASS=0
 FAIL=0
 
 
 # Delete {passed,failed}.sum if they exist from a previous run
-file="$dir/$name/passed.sum"
+file="$work_dir/passed.sum"
 if [ -f "$file" ]
 then
   rm $file
 fi
 
-file="$dir/$name/failed.sum"
+file="$work_dir/failed.sum"
 if [ -f "$file" ]
 then
   rm $file
@@ -49,16 +49,16 @@ fi
 
 for (( i=1; i<=$NUMOFLINES; i++ )); do
     counter=$(printf "%0*d\n" ${#NUMOFLINES} $i)
-    testname=$(cat $dir/$name/$counter/test)
-    testresult=$(cat $dir/$name/$counter/result)
+    testname=$(cat $work_dir/$counter/test)
+    testresult=$(cat $work_dir/$counter/result)
 
     if [ "$testresult" == "passed" ]; then
         PASS=$((PASS+1))
-        echo $testname >> $dir/$name/passed.sum
+        echo $testname >> $work_dir/passed.sum
         echo -e "TEST $counter: ${yellow}$testname${NC} -> ${green}$testresult${NC}"
     elif [ "$testresult" \> "$failed" ]; then
         FAIL=$((FAIL+1))
-        echo $testname >> $dir/$name/failed.sum
+        echo $testname >> $work_dir/failed.sum
         echo -e "TEST $counter: ${yellow}$testname${NC} -> ${red}$testresult${NC}"
     fi
 
@@ -68,19 +68,19 @@ done
 # Check for failures
 echo
 if [ $FAIL -ne 0 ]; then
-    FAILED_TESTS=$(cat $dir/$name/failed.sum)
+    FAILED_TESTS=$(cat $work_dir/failed.sum)
     echo "${bold} Failed tests${normal}"
     echo "${bold}--------------${normal}"
     for eachtest_failed in $FAILED_TESTS; do
         # TODO
         # Provide debugging files
-        dir_of_failed=$(grep -rwn $dir/$name/ -e "$eachtest_failed" | awk 'BEGIN { FS="./names:"; } { print $2; }' | cut -d ':' -f1)
-        if [ -f "$dir/$name/$dir_of_failed/error" ]; then
-            echo -e "- ${red} $eachtest_failed ${NC} => $(cat $dir/$name/$dir_of_failed/error)"
-            echo -e "   sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
+        dir_of_failed=$(grep -rwn $work_dir/ -e "$eachtest_failed" | awk 'BEGIN { FS="./names:"; } { print $2; }' | cut -d ':' -f1)
+        if [ -f "$work_dir/$dir_of_failed/error" ]; then
+            echo -e "- ${red} $eachtest_failed ${NC} => $(cat $work_dir/$dir_of_failed/error)"
+            echo -e "   sourcecode: ${blue}$work_dir/$dir_of_failed/source_code.pl${NC}  log: ${red} $work_dir/$dir_of_failed/log ${NC} report: ${red} $work_dir/$dir_of_failed/debug_reports ${NC}"
         else
             echo -e "- ${red} $eachtest_failed ${NC} => No openQA failure message was found in the logs"
-            echo -e "   sourcecode: ${blue}$dir/$name/$dir_of_failed/source_code.pl${NC}  log: ${red} $dir/$name/$dir_of_failed/log ${NC} report: ${red} $dir/$name/$dir_of_failed/debug_reports ${NC}"
+            echo -e "   sourcecode: ${blue}$work_dir/$dir_of_failed/source_code.pl${NC}  log: ${red} $work_dir/$dir_of_failed/log ${NC} report: ${red} $work_dir/$dir_of_failed/debug_reports ${NC}"
         fi
     done
 
@@ -93,6 +93,6 @@ fi
 echo
 echo "${bold} Summary of test results${normal}"
 echo "=========================${normal}"
-echo -e "+ PASSED : $PASS (${green}$dir/$name/passed.sum${NC})"
-echo -e "- FAILED : $FAIL (${red}$dir/$name/failed.sum${NC})"
+echo -e "+ PASSED : $PASS (${green}$work_dir/passed.sum${NC})"
+echo -e "- FAILED : $FAIL (${red}$work_dir/failed.sum${NC})"
 echo
