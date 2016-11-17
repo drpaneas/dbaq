@@ -20,7 +20,7 @@ wget --quiet $url/file/autoinst-log.txt -O $dir/$name/log
 file="$dir/$name/log"
 if [ -f "$file" ]
 then
-  echo "Complete logs can be found at: $file."
+  echo "Complete logs can be found at: $file"
 else
   echo "Error: couldn't download logs from openqa"
    exit 1
