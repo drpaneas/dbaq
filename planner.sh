@@ -23,6 +23,13 @@ for testname in `cat $dir/$name/names`; do counter=$(printf "%0*d\n" ${#NUMOFLIN
 i=1
 for source_code in `cat /$dir/$name/sources`; do counter=$(printf "%0*d\n" ${#NUMOFLINES} $i); wget --quiet $source_code -O "$dir/$name/$counter/source_code.pl"; ((i = i + 1)); done
 i=1
-for result in `cat /$dir/$name/results`; do counter=$(printf "%0*d\n" ${#NUMOFLINES} $i); echo $result > $dir/$name/$counter/result; ((i = i + 1)); done
+#for result in `cat /$dir/$name/results`; do counter=$(printf "%0*d\n" ${#NUMOFLINES} $i); echo $result > $dir/$name/$counter/result; ((i = i + 1)); done
 
-echo working dir is $work_dir
+while IFS='' read -r result || [[ -n "$result" ]]; do
+  counter=$(printf "%0*d\n" ${#NUMOFLINES} $i)
+  echo $result > $dir/$name/$counter/result;
+  ((i = i + 1));
+done < $dir/$name/results
+
+
+#echo working dir is $work_dir

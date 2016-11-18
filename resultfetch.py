@@ -1,5 +1,8 @@
+# It prints a column of the test results (passed, failed, soft failed)
+# for the openqa job you requested.
+#
 # Usage:
-# python3 testcases.py https://openqa.opensuse.org/tests/300810
+# python3 resultfetch.py https://openqa.opensuse.org/tests/300810
 # -------------------------------------------------------------
 
 import sys
@@ -35,7 +38,6 @@ except:
 
 
 soup = BeautifulSoup(data.content, 'html.parser')
-
 
 for td in soup.find_all('td', {'class':'result'}):
     result = td.string

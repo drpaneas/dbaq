@@ -1,5 +1,5 @@
 # Usage:
-# python3 testcases.py https://openqa.opensuse.org/tests/300810
+# python3 testfetch.py https://openqa.opensuse.org/tests/300810
 # -------------------------------------------------------------
 # pipe ('|') the output as follows:
 # * Names only: cut -f1
@@ -22,7 +22,7 @@ if 'https://' in url:
     base_url = re.search('https://(.+?)/', url)
     protocol = "https://"
 
-# http/https test
+# The user has to type either http or https in front of the URL
 if base_url:
     openqa_server = base_url.group(1)
     protocol = "http://"
