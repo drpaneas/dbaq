@@ -159,6 +159,14 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
     fi
     # -----
 
+    # Fix the newline character issue bug"
+    # For some reason, the "<<<' are broken with newline out of random in the logs
+    # ---
+    debug_fixed="$work_dir/$counter/debug_fixed"
+    python3 fix_command_lines.py $debug > $debug_fixed
+    mv $debug_fixed $debug
+    # ---
+
 
     # Create log (DEBUG API only) per unit test of the testsuite
     egrep -i 'Debug: ' $debug > $debug_lines
