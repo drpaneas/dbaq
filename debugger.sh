@@ -100,6 +100,66 @@ for (( i=1; i<=$NUMOFLINES; i++ )); do
       continue; # Skip the next of the loop, go to the next text
     fi
 
+    # Fix the debug file (bug for testapi::wait_idle)
+    # Remove the noise before that
+    # -----
+
+    grep "Debug: " $debug | grep "testapi::wait_idle" &> /dev/null
+    rc=$?
+
+    # Check if the bug exists in the current test module
+    if [[ $rc == 0 ]]; then
+
+        # Reverse debug file (upwards)
+        gubed="$work_dir/$counter/gubed"
+
+        metritis=1
+        bug_wait_idle=false
+        debug_fixed="$work_dir/$counter/debug_fixed"
+
+        if [ -f "$debug_fixed" ]
+        then
+            rm -r $debug_fixed
+        fi
+
+        if [ -f "$gubed" ]
+        then
+            rm -r $gubed
+        fi
+
+        tac $debug > $gubed
+
+        while IFS='' read -r debug_output_line || [[ -n "$debug_output_line" ]]; do
+            if [[ $debug_output_line  == *"Debug: "*"testapi::wait_idle"* ]]; then
+                bug_wait_idle=true
+                # Save the line-number
+                number_of_debug_line=$(echo $metritis)
+            fi
+
+            if [[ $bug_wait_idle == true ]] && [[ $debug_output_line != *">>> testapi"*"found"* ]]; then
+                # Check if the current line is the "Debug: testapi::wait_idle' -- do not delete this one (!!!)
+                if [[ $number_of_debug_line == $metritis ]]; then
+                    fix=$(echo $debug_output_line)
+                else
+                    #fix="bug"
+                    continue
+                fi
+            else
+                bug_wait_idle=false
+                fix=$(echo $debug_output_line)
+            fi
+
+            echo "$fix" >> $debug_fixed
+            metritis=$(( $metritis + 1 ))
+        done < "$gubed"
+
+        tac $debug_fixed > $debug
+        rm $debug_fixed
+        rm $gubed
+    fi
+    # -----
+
+
     # Create log (DEBUG API only) per unit test of the testsuite
     egrep -i 'Debug: ' $debug > $debug_lines
 
