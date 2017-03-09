@@ -171,6 +171,6 @@ for testsuite, url in results.items():
   print("BEFORE :",last_previous_url(url))
   print("AFTER  :",url)
   after  = parse_results_from_url(url)
-  before = parse_results_from_url(url)
+  before = parse_results_from_url(last_previous_url(url))
   print_results(before,after)
   print()
